@@ -13,7 +13,7 @@ const load = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSO
 const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 const norm = s => String(s).toLowerCase().replace(/["'״׳`]/g, '').replace(/[-–_,.]/g, ' ').replace(/\s+/g, ' ').trim();
-const emptyList = () => ({ version: 1, items: [], custom: [], updatedAt: null, updatedBy: null });
+const emptyList = () => ({ version: 1, items: [], custom: [], history: [], updatedAt: null, updatedBy: null });
 
 // ---------- state ----------
 const S = {
@@ -55,6 +55,14 @@ function applyOp(list, op) {
     case 'del': { const it = findItem(list, op); if (it) list.items = list.items.filter(i => i !== it); break; }
     case 'done': { const it = findItem(list, op); if (it) { it.done = op.v; it.doneAt = op.v ? op.at : null; } break; }
     case 'clearDone': list.items = list.items.filter(i => !i.done); break;
+    case 'finish': { // הקנייה הושלמה: רושמים בהיסטוריה ומוחקים את מה שנקנה
+      const bought = list.items.filter(i => i.done); if (!bought.length) break;
+      list.history = list.history || [];
+      if (!list.history.some(h => h.id === op.id))
+        list.history.unshift({ id: op.id, at: op.at, by: op.by, items: bought.map(i => ({ n: i.n, c: i.c, q: i.q })) });
+      list.history = list.history.slice(0, 60);
+      list.items = list.items.filter(i => !i.done); break;
+    }
     case 'custom': if (!list.custom.some(x => norm(x.n) === norm(op.n))) list.custom.push({ n: op.n, c: op.c }); break;
   }
   return list;
@@ -237,8 +245,9 @@ function addProduct(it) {
 function render() {
   document.body.classList.toggle('store', S.mode === 'store');
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.mode === S.mode));
-  $('#addBar').classList.toggle('hidden', S.mode === 'store');
+  $('#addBar').classList.toggle('hidden', S.mode !== 'list');
   const list = view();
+  if (S.mode === 'history') return renderHistory(list);
   const todo = list.items.filter(i => !i.done), done = list.items.filter(i => i.done);
   const byCat = {};
   for (const i of todo) (byCat[i.c] ||= []).push(i);
@@ -266,6 +275,24 @@ function render() {
   const t = S.lastSync ? S.lastSync.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : null;
   $('#progressText').innerHTML = `<span>${done.length} מתוך ${total} בעגלה</span><span>${connected() ? (t ? 'עודכן ' + t : 'מעדכן…') : 'לא מסונכרן'}</span>`;
   $('#finishWrap').classList.toggle('hidden', !(S.mode === 'store' && done.length));
+}
+
+function renderHistory(list) {
+  const h = list.history || [];
+  const fmt = ts => new Date(ts).toLocaleString('he-IL', { weekday: 'short', day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' });
+  $('#list').innerHTML = h.map(e => `
+    <details class="hist card">
+      <summary>
+        <span class="h-date">🧾 ${esc(fmt(e.at))}</span>
+        <span class="h-meta">${e.items.length} מוצרים${e.by ? ' · ' + esc(e.by) : ''}</span>
+      </summary>
+      <ul class="h-items">${e.items.map(i => `<li>${cat(i.c).icon} ${esc(i.n)}${i.q > 1 ? ` <b>×${i.q}</b>` : ''}</li>`).join('')}</ul>
+      <button class="h-again" data-act="again" data-hid="${esc(e.id)}">↺ הוסף את כל המוצרים שוב לרשימה</button>
+    </details>`).join('');
+  $('#empty').classList.toggle('hidden', h.length > 0);
+  $('#empty p').innerHTML = 'עוד אין קניות שהושלמו.<br>כשמסיימים קנייה היא נרשמת כאן.';
+  $('#storeHead').classList.add('hidden');
+  $('#finishWrap').classList.add('hidden');
 }
 
 function rowHtml(i) {
@@ -300,7 +327,11 @@ document.addEventListener('click', e => {
   const actEl = e.target.closest('[data-act]'); if (!actEl) return;
   const act = actEl.dataset.act;
   const row = e.target.closest('.row'); const it = row && itemById(row.dataset.id);
-  if (act === 'toggle' && it) { e.stopPropagation(); dispatch({ t: 'done', id: it.id, n: it.n, v: !it.done }); if (navigator.vibrate) navigator.vibrate(15); }
+  if (act === 'toggle' && it) { e.stopPropagation(); dispatch({ t: 'done', id: it.id, n: it.n, v: !it.done }); if (navigator.vibrate) navigator.vibrate(15); checkComplete(); }
+  else if (act === 'again') {
+    const e2 = (view().history || []).find(h => h.id === actEl.dataset.hid);
+    if (e2) { e2.items.forEach(i => dispatch({ t: 'add', id: uid(), n: i.n, c: i.c, q: i.q })); toast(`נוספו ${e2.items.length} מוצרים לרשימה`); }
+  }
   else if (act === 'plus' && it) dispatch({ t: 'qty', id: it.id, n: it.n, q: it.q + 1 });
   else if (act === 'minus' && it) { if (it.q > 1) dispatch({ t: 'qty', id: it.id, n: it.n, q: it.q - 1 }); }
   else if (act === 'del' && it) {
@@ -340,11 +371,21 @@ $('#clearSearch').addEventListener('click', () => { search$.value = ''; renderSu
 document.addEventListener('click', e => { if (!e.target.closest('.add-bar')) $('#suggest').classList.add('hidden'); });
 search$.addEventListener('focus', renderSuggest);
 
-$('#finishBtn').addEventListener('click', () => {
-  const doneItems = view().items.filter(i => i.done);
-  dispatch({ t: 'clearDone' });
-  toast(`נוקו ${doneItems.length} מוצרים מהעגלה`, () => doneItems.forEach(i => dispatch({ t: 'add', id: uid(), n: i.n, c: i.c, q: i.q })));
-});
+function finishShopping(auto) {
+  const n = view().items.filter(i => i.done).length; if (!n) return;
+  dispatch({ t: 'finish', id: uid() });
+  toast(auto ? `🎉 הרשימה בוצעה במלואה – נרשמה בהיסטוריה (${n} מוצרים)` : `✓ נרשם בהיסטוריה ונמחק מהרשימה (${n} מוצרים)`);
+}
+// כשכל המוצרים סומנו – רושמים את הקנייה בהיסטוריה ומוחקים את הרשימה שבוצעה
+let completeTimer;
+function checkComplete() {
+  clearTimeout(completeTimer);
+  completeTimer = setTimeout(() => {
+    const items = view().items;
+    if (items.length && items.every(i => i.done)) finishShopping(true);
+  }, 1500);
+}
+$('#finishBtn').addEventListener('click', () => finishShopping(false));
 $('#syncBtn').addEventListener('click', () => connected() ? sync() : openSettings());
 $('#settingsBtn').addEventListener('click', openSettings);
 
