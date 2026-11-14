@@ -1,6 +1,6 @@
 // Service worker: האפליקציה נפתחת גם בלי קליטה. קריאות ל-GitHub API לא נשמרות במטמון.
-const CACHE = 'shopping-list-v3';
-const FILES = ['./', 'index.html', 'style.css', 'app.js', 'products.json', 'manifest.json', 'icons/icon-192.png', 'icons/icon-512.png'];
+const CACHE = 'shopping-list-v4';
+const FILES = ['./', 'index.html', 'style.css', 'app.js', 'pdf.js', 'products.json', 'manifest.json', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
@@ -18,6 +18,6 @@ self.addEventListener('fetch', e => {
         const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy));
       }
       return r;
-    }).catch(() => caches.match(e.request))
+    }).catch(() => caches.match(e.request, { ignoreSearch: true }))
   );
 });

@@ -389,6 +389,34 @@ $('#finishBtn').addEventListener('click', () => finishShopping(false));
 $('#syncBtn').addEventListener('click', () => connected() ? sync() : openSettings());
 $('#settingsBtn').addEventListener('click', openSettings);
 
+// הורדת PDF של הרשימה – גיבוי לסופר בלי קליטה (נוצר בטלפון, עובד גם אופליין)
+$('#pdfBtn').addEventListener('click', async () => {
+  const list = view();
+  const todo = list.items.filter(i => !i.done);
+  if (!todo.length) { toast('אין מוצרים ברשימה'); return; }
+  const byCat = {};
+  for (const i of todo) (byCat[i.c] ||= []).push(i);
+  const groups = Object.keys(byCat).sort((a, b) => cat(a).order - cat(b).order)
+    .map(c => ({ icon: cat(c).icon, name: cat(c).name, items: byCat[c].sort((a, b) => a.n.localeCompare(b.n, 'he')) }));
+  const now = new Date();
+  const date = now.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'numeric', year: 'numeric' });
+  const time = now.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+  toast('מכין PDF…');
+  try {
+    const blob = await window.ListPdf.makeListPdf({
+      groups, title: 'רשימת הקניות שלנו',
+      subtitle: `${date} · ${time} · ${todo.length} מוצרים`
+    });
+    const name = `רשימת-קניות-${now.toISOString().slice(0, 10)}.pdf`;
+    const file = new File([blob], name, { type: 'application/pdf' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(file); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+    toast('✓ ה-PDF ירד לטלפון');
+  } catch (e) { toast('לא הצלחתי ליצור PDF'); }
+});
+
 // settings
 function openSettings() {
   const s = S.settings;
