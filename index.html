@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f6b47">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="קניות">
+<title>רשימת הקניות שלנו</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="title-row">
+    <h1>רשימת הקניות שלנו</h1>
+    <button id="syncBtn" class="icon-btn" aria-label="סנכרון"><span id="syncDot" class="dot"></span></button>
+    <button id="settingsBtn" class="icon-btn" aria-label="הגדרות">⚙️</button>
+  </div>
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-mode="list">📝 הרשימה</button>
+    <button class="tab" data-mode="store">🛒 הגעתי לסופר</button>
+  </div>
+  <div id="banner" class="banner hidden"></div>
+</header>
+
+<main>
+  <section id="addBar" class="add-bar">
+    <div class="search-wrap">
+      <input id="search" type="text" autocomplete="off" enterkeyhint="done" placeholder="מה צריך לקנות? התחל להקליד…">
+      <button id="clearSearch" class="clear-x hidden" aria-label="נקה">✕</button>
+    </div>
+    <ul id="suggest" class="suggest hidden" role="listbox"></ul>
+  </section>
+
+  <section id="storeHead" class="store-head hidden">
+    <div class="progress"><div id="progressFill"></div></div>
+    <div id="progressText" class="progress-text"></div>
+  </section>
+
+  <section id="list"></section>
+
+  <div id="empty" class="empty hidden">
+    <div class="empty-icon">🧺</div>
+    <p>הרשימה ריקה.<br>הקלד מוצר למעלה כדי להוסיף.</p>
+  </div>
+
+  <div id="finishWrap" class="finish-wrap hidden">
+    <button id="finishBtn" class="finish-btn">✓ סיימתי – נקה את מה שבעגלה</button>
+  </div>
+</main>
+
+<div id="toast" class="toast hidden"></div>
+
+<!-- settings -->
+<div id="settingsModal" class="modal hidden">
+  <div class="sheet">
+    <h2>חיבור ל-GitHub</h2>
+    <p class="hint">הרשימה נשמרת בקובץ בריפו שלך, כך ששני הטלפונים רואים אותה רשימה.</p>
+    <label>השם שלך <input id="sName" placeholder="למשל: סהר"></label>
+    <label>טוקן GitHub <input id="sToken" type="password" placeholder="github_pat_…" autocomplete="off"></label>
+    <details>
+      <summary>הגדרות ריפו (בדרך כלל מתמלא לבד)</summary>
+      <label>משתמש GitHub (owner) <input id="sOwner" dir="ltr"></label>
+      <label>שם הריפו <input id="sRepo" dir="ltr"></label>
+      <label>ענף (branch) <input id="sBranch" dir="ltr" placeholder="main"></label>
+      <label>נתיב הקובץ <input id="sPath" dir="ltr" placeholder="data/list.json"></label>
+    </details>
+    <div id="sStatus" class="s-status"></div>
+    <div class="sheet-actions">
+      <button id="sSave" class="primary">שמור והתחבר</button>
+      <button id="sClose">סגור</button>
+    </div>
+  </div>
+</div>
+
+<!-- category picker -->
+<div id="catModal" class="modal hidden">
+  <div class="sheet">
+    <h2 id="catTitle">בחר מחלקה</h2>
+    <div id="catGrid" class="cat-grid"></div>
+    <div class="sheet-actions"><button id="catClose">סגור</button></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
