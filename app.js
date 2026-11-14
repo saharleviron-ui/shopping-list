@@ -100,7 +100,7 @@ async function ghPut(list, sha) {
   return { sha: j.content.sha };
 }
 function httpErr(code) {
-  const msg = { 401: 'הטוקן לא תקין או שפג תוקפו', 403: 'לטוקן אין הרשאת כתיבה לריפו', 404: 'הריפו לא נמצא – בדוק שם משתמש ושם ריפו' }[code] || `שגיאת GitHub (${code})`;
+  const msg = { 401: 'הטוקן לא תקין או שפג תוקפו', 403: 'לטוקן אין הרשאת כתיבה – ב-GitHub ערוך את הטוקן: Contents ← Read and write', 404: 'הריפו לא נמצא – בדוק שם משתמש ושם ריפו' }[code] || `שגיאת GitHub (${code})`;
   const e = new Error(msg); e.code = code; return e;
 }
 
