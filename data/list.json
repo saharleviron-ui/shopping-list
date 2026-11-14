@@ -1,7 +1,38 @@
 {
  "version": 1,
- "items": [],
+ "items": [
+  {
+   "id": "mwg5cia0b9ced",
+   "n": "חלב נטול לקטוז",
+   "c": "dairy",
+   "q": 1,
+   "done": true,
+   "by": "סהר",
+   "at": 1794645085320,
+   "doneAt": 1794646008284
+  },
+  {
+   "id": "mwg5vd7rejgxd",
+   "n": "לחם קל",
+   "c": "bakery",
+   "q": 1,
+   "done": true,
+   "by": "סהר",
+   "at": 1794645965224,
+   "doneAt": 1794646005763
+  },
+  {
+   "id": "mwg5vlh9nn5vc",
+   "n": "סוכר וניל",
+   "c": "baking",
+   "q": 1,
+   "done": true,
+   "by": "סהר",
+   "at": 1794645975933,
+   "doneAt": 1794646002776
+  }
+ ],
  "custom": [],
- "updatedAt": null,
- "updatedBy": null
+ "updatedAt": "2026-11-14T09:00:51.730Z",
+ "updatedBy": "סהר"
 }
