@@ -22,16 +22,6 @@
    "doneAt": null
   },
   {
-   "id": "mwg5vlh9nn5vc",
-   "n": "סוכר וניל",
-   "c": "baking",
-   "q": 1,
-   "done": false,
-   "by": "סהר",
-   "at": 1794645975933,
-   "doneAt": null
-  },
-  {
    "id": "mwg5bj2yxp9xp",
    "n": "שמן זית",
    "c": "baking",
@@ -96,6 +86,6 @@
    "c": "other"
   }
  ],
- "updatedAt": "2026-11-14T09:02:47.658Z",
+ "updatedAt": "2026-11-14T09:03:06.141Z",
  "updatedBy": "רעות בן אור שקד"
 }
