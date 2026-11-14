@@ -4,7 +4,7 @@
 'use strict';
 const W = 1240, H = 1754, M = 80;            // A4 בקירוב 150dpi
 const GREEN = '#1f6b47', SOFT = '#e3f1e8', INK = '#1d2a22', MUTED = '#6b776f', LINE = '#d9d4c7';
-const FONT = 'Heebo, "Segoe UI", Arial, sans-serif';
+const FONT = 'Rubik, "Segoe UI", Arial, sans-serif';
 
 function newPage() {
   const c = document.createElement('canvas'); c.width = W; c.height = H;

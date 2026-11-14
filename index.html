@@ -3,58 +3,73 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1f6b47">
+<meta name="theme-color" content="#2a1838">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="קניות">
 <title>רשימת הקניות שלנו</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 <header class="top">
-  <div class="title-row">
-    <h1>רשימת הקניות שלנו</h1>
-    <button id="pdfBtn" class="icon-btn" aria-label="הורד PDF">📄</button>
-    <button id="syncBtn" class="icon-btn" aria-label="סנכרון"><span id="syncDot" class="dot"></span></button>
-    <button id="settingsBtn" class="icon-btn" aria-label="הגדרות">⚙️</button>
+  <div class="top-row">
+    <div class="brand">
+      <h1>מה קונים?</h1>
+      <p id="subline"></p>
+    </div>
+    <div class="top-actions">
+      <button id="pdfBtn" class="icon-btn" aria-label="הורד PDF לגיבוי">
+        <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9.5 14.5L12 17l2.5-2.5"/></svg>
+      </button>
+      <button id="syncBtn" class="icon-btn" aria-label="סנכרון"><span id="syncDot" class="dot"></span></button>
+      <button id="settingsBtn" class="icon-btn" aria-label="הגדרות">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      </button>
+    </div>
   </div>
-  <div class="tabs" role="tablist">
-    <button class="tab active" data-mode="list">📝 הרשימה</button>
-    <button class="tab" data-mode="store">🛒 הגעתי לסופר</button>
-    <button class="tab tab-sm" data-mode="history">🧾 היסטוריה</button>
-  </div>
+  <section id="addBar" class="add-bar">
+    <div class="search-wrap">
+      <svg class="search-ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      <input id="search" type="text" autocomplete="off" enterkeyhint="done" placeholder="מה חסר בבית?">
+      <button id="clearSearch" class="clear-x hidden" aria-label="נקה"><svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg></button>
+    </div>
+    <ul id="suggest" class="suggest hidden" role="listbox"></ul>
+  </section>
+  <section id="storeHead" class="store-head hidden">
+    <div id="storeCount" class="store-count"></div>
+    <div class="store-meta">
+      <div id="storeLabel" class="store-label"></div>
+      <div id="segments" class="segments"></div>
+    </div>
+  </section>
   <div id="banner" class="banner hidden"></div>
 </header>
 
 <main>
-  <section id="addBar" class="add-bar">
-    <div class="search-wrap">
-      <input id="search" type="text" autocomplete="off" enterkeyhint="done" placeholder="מה צריך לקנות? התחל להקליד…">
-      <button id="clearSearch" class="clear-x hidden" aria-label="נקה">✕</button>
-    </div>
-    <ul id="suggest" class="suggest hidden" role="listbox"></ul>
-  </section>
-
-  <section id="storeHead" class="store-head hidden">
-    <div class="progress"><div id="progressFill"></div></div>
-    <div id="progressText" class="progress-text"></div>
-  </section>
-
-  <section id="list"></section>
-
-  <div id="empty" class="empty hidden">
-    <div class="empty-icon">🧺</div>
-    <p>הרשימה ריקה.<br>הקלד מוצר למעלה כדי להוסיף.</p>
-  </div>
-
-  <div id="finishWrap" class="finish-wrap hidden">
-    <button id="finishBtn" class="finish-btn">✓ סיימתי – רשום ומחק את מה שנקנה</button>
-  </div>
+  <div id="list"></div>
+  <div id="empty" class="empty hidden"></div>
 </main>
+
+<div id="finishWrap" class="finish-wrap hidden">
+  <button id="finishBtn" class="finish-btn">סיימתי – שמור בהיסטוריה ונקה את העגלה</button>
+</div>
+
+<nav class="dock" role="tablist">
+  <button class="tab active" data-mode="list">
+    <svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg>
+    <span>הרשימה</span>
+  </button>
+  <button class="tab tab-store" data-mode="store">
+    <svg viewBox="0 0 24 24"><path d="M3 4h2.2l2.3 11h10.8l2-8H6.3"/><circle cx="9.5" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/></svg>
+    <span>הגעתי לסופר</span>
+  </button>
+  <button class="tab" data-mode="history">
+    <svg viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>
+    <span>היסטוריה</span>
+  </button>
+</nav>
 
 <div id="toast" class="toast hidden"></div>
 
@@ -89,7 +104,7 @@
   </div>
 </div>
 
-<script src="pdf.js?v=4"></script>
-<script src="app.js?v=4"></script>
+<script src="pdf.js?v=6"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>

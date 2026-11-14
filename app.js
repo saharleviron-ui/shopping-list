@@ -224,7 +224,7 @@ function renderSuggest() {
   S.sugItems = items; if (S.sugIndex >= items.length) S.sugIndex = -1;
   ul.innerHTML = items.map((it, idx) => `
     <li data-idx="${idx}" class="${it.isNew ? 's-new' : ''} ${idx === S.sugIndex ? 'sel' : ''}" role="option">
-      <span class="s-ic">${it.isNew ? '➕' : cat(it.c).icon}</span>
+      <span class="s-ic" style="--c:${catColor(it.c)}">${it.isNew ? '+' : cat(it.c).icon}</span>
       <span class="s-name">${it.isNew ? 'הוסף "' + esc(it.n) + '"' : highlight(it.n, q)}</span>
       ${it.onList ? `<span class="s-tag">ברשימה ×${it.onList.q}</span>` : ''}
     </li>`).join('');
@@ -242,8 +242,23 @@ function addProduct(it) {
 }
 
 // ---------- render ----------
+// צבע לכל מחלקה – כמו שלטי המעברים בסופר
+const CAT_COLORS = {
+  produce: '#2f9a55', bakery: '#c98a1c', dairy: '#2f7fc4', meat: '#cf3b2e', deli: '#e0672c',
+  dry: '#9a6a34', cans: '#b8402b', baking: '#7b5fc7', breakfast: '#d39a17', snacks: '#d6488f',
+  drinks: '#1497ab', coffee: '#6f4529', frozen: '#3fa3dc', baby: '#e2789f', hygiene: '#6c7fd0',
+  cleaning: '#16a08a', pets: '#8c6a4c', other: '#7c828c'
+};
+const catColor = id => CAT_COLORS[id] || CAT_COLORS.other;
+const ICON = {
+  minus: '<svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg>',
+  plus: '<svg viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"/></svg>',
+  x: '<svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>',
+  check: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
+};
+
 function render() {
-  document.body.classList.toggle('store', S.mode === 'store');
+  document.body.dataset.mode = S.mode;
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.mode === S.mode));
   $('#addBar').classList.toggle('hidden', S.mode !== 'list');
   const list = view();
@@ -256,57 +271,70 @@ function render() {
   done.sort((a, b) => (b.doneAt || 0) - (a.doneAt || 0));
 
   let html = groups.map(g => `
-    <div class="group">
-      <div class="group-h">${cat(g).icon} ${esc(cat(g).name)} <span class="cnt">${byCat[g].length}</span></div>
-      <div class="card">${byCat[g].map(rowHtml).join('')}</div>
-    </div>`).join('');
+    <section class="aisle" style="--c:${catColor(g)}">
+      <h2 class="aisle-sign"><span class="aisle-ic">${cat(g).icon}</span><span class="aisle-name">${esc(cat(g).name)}</span><span class="aisle-n">${byCat[g].length}</span></h2>
+      <div class="shelf">${byCat[g].map(rowHtml).join('')}</div>
+    </section>`).join('');
   if (done.length) html += `
-    <div class="group done-group">
-      <div class="group-h">✓ בעגלה <span class="cnt">${done.length}</span></div>
-      <div class="card">${done.map(rowHtml).join('')}</div>
-    </div>`;
+    <section class="aisle cart" style="--c:#8b8f96">
+      <h2 class="aisle-sign"><span class="aisle-ic">🛒</span><span class="aisle-name">כבר בעגלה</span><span class="aisle-n">${done.length}</span></h2>
+      <div class="shelf">${done.map(rowHtml).join('')}</div>
+    </section>`;
   $('#list').innerHTML = html;
+  S.justDone = null;
   $('#empty').classList.toggle('hidden', list.items.length > 0);
-  $('#empty p').innerHTML = S.mode === 'store' ? 'אין מה לקנות כרגע 🎉' : 'הרשימה ריקה.<br>הקלד מוצר למעלה כדי להוסיף.';
+  $('#empty').innerHTML = S.mode === 'store'
+    ? '<div class="empty-big">הכל בעגלה</div><p>אין מה לקנות כרגע.</p>'
+    : '<div class="empty-big">הרשימה ריקה</div><p>כתבו למעלה מה חסר בבית, למשל "חלב" או "במבה".</p>';
 
   const total = list.items.length;
-  $('#storeHead').classList.toggle('hidden', S.mode !== 'store' || !total);
-  $('#progressFill').style.width = total ? (done.length / total * 100) + '%' : '0';
   const t = S.lastSync ? S.lastSync.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : null;
-  $('#progressText').innerHTML = `<span>${done.length} מתוך ${total} בעגלה</span><span>${connected() ? (t ? 'עודכן ' + t : 'מעדכן…') : 'לא מסונכרן'}</span>`;
+  const syncTxt = connected() ? (t ? `מעודכן מ-${t}` : 'מתעדכן…') : 'לא מסונכרן';
+  const nCats = groups.length;
+  $('#subline').textContent = S.mode === 'store'
+    ? syncTxt
+    : (todo.length ? `${todo.length} מוצרים ב-${nCats} מחלקות` : 'אין מוצרים ברשימה');
+
+  $('#storeHead').classList.toggle('hidden', S.mode !== 'store' || !total);
+  $('#storeCount').innerHTML = `<b>${done.length}</b><span>/${total}</span>`;
+  $('#storeLabel').textContent = todo.length ? `נשארו ${todo.length} לאסוף` : 'הכל נאסף';
+  $('#segments').innerHTML = list.items.map((_, k) => `<i class="${k < done.length ? 'on' : ''}"></i>`).join('');
   $('#finishWrap').classList.toggle('hidden', !(S.mode === 'store' && done.length));
 }
 
 function renderHistory(list) {
   const h = list.history || [];
-  const fmt = ts => new Date(ts).toLocaleString('he-IL', { weekday: 'short', day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const fmtDay = ts => new Date(ts).toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'numeric' });
+  const fmtTime = ts => new Date(ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
   $('#list').innerHTML = h.map(e => `
-    <details class="hist card">
+    <details class="receipt">
       <summary>
-        <span class="h-date">🧾 ${esc(fmt(e.at))}</span>
-        <span class="h-meta">${e.items.length} מוצרים${e.by ? ' · ' + esc(e.by) : ''}</span>
+        <span class="r-day">${esc(fmtDay(e.at))}</span>
+        <span class="r-meta">${esc(fmtTime(e.at))}${e.by ? ', ' + esc(e.by) : ''}</span>
+        <span class="r-n">${e.items.length}<small>מוצרים</small></span>
       </summary>
-      <ul class="h-items">${e.items.map(i => `<li>${cat(i.c).icon} ${esc(i.n)}${i.q > 1 ? ` <b>×${i.q}</b>` : ''}</li>`).join('')}</ul>
-      <button class="h-again" data-act="again" data-hid="${esc(e.id)}">↺ הוסף את כל המוצרים שוב לרשימה</button>
+      <ul class="r-items">${e.items.map(i => `<li style="--c:${catColor(i.c)}"><span>${esc(i.n)}</span>${i.q > 1 ? `<b>×${i.q}</b>` : ''}</li>`).join('')}</ul>
+      <button class="r-again" data-act="again" data-hid="${esc(e.id)}">הוסף את כל המוצרים שוב לרשימה</button>
     </details>`).join('');
   $('#empty').classList.toggle('hidden', h.length > 0);
-  $('#empty p').innerHTML = 'עוד אין קניות שהושלמו.<br>כשמסיימים קנייה היא נרשמת כאן.';
+  $('#empty').innerHTML = '<div class="empty-big">עוד אין קניות</div><p>כשמסיימים קנייה היא נשמרת כאן, ואפשר להוסיף אותה שוב לרשימה בלחיצה.</p>';
+  $('#subline').textContent = h.length ? `${h.length} קניות קודמות` : 'קניות קודמות';
   $('#storeHead').classList.add('hidden');
   $('#finishWrap').classList.add('hidden');
 }
 
 function rowHtml(i) {
   const store = S.mode === 'store';
-  const meta = [i.by && !store ? 'הוסיף/ה: ' + i.by : ''].filter(Boolean).join(' · ');
+  const meta = i.by && !store && !i.done && i.by !== S.settings.name ? `הוסיף/ה: ${i.by}` : '';
   return `
-  <div class="row ${i.done ? 'done' : ''}" data-id="${esc(i.id)}" ${store ? 'data-act="toggle"' : ''}>
-    <button class="chk" data-act="toggle" aria-label="סמן">${i.done ? '✓' : ''}</button>
-    ${store ? '' : `<button class="cat-btn" data-act="cat" aria-label="מחלקה">${cat(i.c).icon}</button>`}
-    <div class="name"><div class="n">${esc(i.n)}</div>${meta ? `<div class="meta">${esc(meta)}</div>` : ''}</div>
+  <div class="row ${i.done ? 'done' : ''} ${S.justDone === i.id ? 'just' : ''}" data-id="${esc(i.id)}" ${store ? 'data-act="toggle"' : ''}>
+    <button class="chk" data-act="toggle" aria-label="${i.done ? 'הוצא מהעגלה' : 'סמן שנכנס לעגלה'}">${ICON.check}</button>
+    <div class="name"><span class="n">${esc(i.n)}</span>${meta ? `<span class="meta">${esc(meta)}</span>` : ''}</div>
     ${store
       ? (i.q > 1 ? `<span class="qty-badge">×${i.q}</span>` : '')
-      : `<div class="qty"><button data-act="minus">−</button><span>${i.q}</span><button data-act="plus">+</button></div>
-         <button class="del" data-act="del" aria-label="מחק">🗑</button>`}
+      : `${i.done ? '' : `<div class="qty"><button data-act="minus" aria-label="פחות">${ICON.minus}</button><span>${i.q}</span><button data-act="plus" aria-label="יותר">${ICON.plus}</button></div>`}
+         <button class="cat-btn" data-act="cat" aria-label="שנה מחלקה">${cat(i.c).icon}</button>
+         <button class="del" data-act="del" aria-label="מחק">${ICON.x}</button>`}
   </div>`;
 }
 
@@ -327,7 +355,7 @@ document.addEventListener('click', e => {
   const actEl = e.target.closest('[data-act]'); if (!actEl) return;
   const act = actEl.dataset.act;
   const row = e.target.closest('.row'); const it = row && itemById(row.dataset.id);
-  if (act === 'toggle' && it) { e.stopPropagation(); dispatch({ t: 'done', id: it.id, n: it.n, v: !it.done }); if (navigator.vibrate) navigator.vibrate(15); checkComplete(); }
+  if (act === 'toggle' && it) { e.stopPropagation(); S.justDone = it.done ? null : it.id; dispatch({ t: 'done', id: it.id, n: it.n, v: !it.done }); if (navigator.vibrate) navigator.vibrate(15); checkComplete(); }
   else if (act === 'again') {
     const e2 = (view().history || []).find(h => h.id === actEl.dataset.hid);
     if (e2) { e2.items.forEach(i => dispatch({ t: 'add', id: uid(), n: i.n, c: i.c, q: i.q })); toast(`נוספו ${e2.items.length} מוצרים לרשימה`); }
