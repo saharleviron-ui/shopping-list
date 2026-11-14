@@ -239,3 +239,10 @@ body[data-mode="store"] .toast{bottom:calc(var(--dock-h) + 90px + env(safe-area-
 .tab.active{text-shadow:none}
 .tab.active{color:var(--sky1);background:#fff;box-shadow:0 4px 12px rgba(10,60,120,.18)}
 .tab-store.active{color:var(--coral);background:#fff}
+
+/* סרגל תחתון ברוחב מלא – כל הרקע בגרדיאנט השמיים */
+.dock{inset-inline:0;bottom:0;max-width:none;margin:0;border-radius:24px 24px 0 0;border:0;border-top:1px solid rgba(255,255,255,.35);
+  padding:8px max(12px,calc((100vw - 460px)/2)) calc(8px + env(safe-area-inset-bottom));
+  background:linear-gradient(165deg,var(--sky1) 0%,#3f9ceb 55%,var(--sky2) 100%);box-shadow:0 -8px 28px rgba(42,139,224,.28)}
+.dock::before{background:radial-gradient(160px 80px at 88% 0%,rgba(255,226,120,.4),transparent 70%)}
+.finish-wrap{bottom:calc(var(--dock-h) + 30px + env(safe-area-inset-bottom))}
