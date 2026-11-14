@@ -85,11 +85,11 @@ svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke
 
 /* ---------- aisles ---------- */
 main{max-width:640px;margin:0 auto;padding:14px 12px 0}
-.aisle{margin-bottom:16px}
-.aisle-sign{display:flex;align-items:center;gap:8px;margin:0 4px 7px;font-size:12.5px;font-weight:500;color:var(--muted)}
-.aisle-ic{font-size:13px;line-height:1;width:22px;height:22px;display:grid;place-items:center;border-radius:7px;background:color-mix(in srgb,var(--c) 14%,transparent)}
+.aisle{margin-bottom:22px}
+.aisle-sign{display:flex;align-items:center;gap:10px;margin:0 2px 9px;font-size:17px;font-weight:700;color:var(--muted)}
+.aisle-ic{font-size:18px;line-height:1;width:32px;height:32px;border-radius:10px!important;display:grid;place-items:center;border-radius:7px;background:color-mix(in srgb,var(--c) 14%,transparent)}
 .aisle-name{color:color-mix(in srgb,var(--c) 70%,#fff);text-shadow:0 0 12px color-mix(in srgb,var(--c) 55%,transparent);letter-spacing:.2px}
-.aisle-n{font-size:11px;color:var(--muted)}
+.aisle-n{font-size:12px;font-weight:600;color:var(--muted);border:1px solid var(--edge);border-radius:20px;padding:1px 8px}
 .aisle-sign::after{content:"";flex:1;height:1px;background:linear-gradient(to left,color-mix(in srgb,var(--c) 50%,transparent),transparent)}
 .shelf{position:relative;background:var(--glass);border:1px solid var(--edge);border-radius:var(--r);overflow:hidden}
 .shelf::before{content:"";position:absolute;inset-inline-start:0;top:12px;bottom:12px;width:2px;border-radius:2px;background:var(--c);box-shadow:0 0 10px var(--c),0 0 2px var(--c)}
@@ -100,7 +100,7 @@ main{max-width:640px;margin:0 auto;padding:14px 12px 0}
 .chk svg{width:14px;height:14px;stroke-width:3}
 .row.done .chk{background:var(--lime);border-color:var(--lime);color:#06210f;box-shadow:0 0 12px rgba(88,255,156,.6)}
 .name{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
-.n{position:relative;align-self:flex-start;font-size:15.5px;line-height:1.35;word-break:break-word}
+.n{position:relative;align-self:flex-start;font-size:18.5px;font-weight:600;line-height:1.3;word-break:break-word}
 .meta{font-size:11px;color:var(--magenta);opacity:.85}
 .row.done .n{color:var(--muted)}
 .row.done .n::after{content:"";position:absolute;inset-inline:-2px;top:52%;height:1.5px;background:var(--lime);box-shadow:0 0 6px var(--lime);border-radius:2px}
@@ -119,7 +119,7 @@ main{max-width:640px;margin:0 auto;padding:14px 12px 0}
 .cart .shelf{background:rgba(255,255,255,.02)}
 
 body[data-mode="store"] .row{min-height:58px;cursor:pointer}
-body[data-mode="store"] .n{font-size:17px}
+body[data-mode="store"] .n{font-size:20.5px}
 body[data-mode="store"] .chk{width:28px;height:28px}
 
 /* empty */

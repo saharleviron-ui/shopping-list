@@ -325,11 +325,11 @@ function renderHistory(list) {
 
 function rowHtml(i) {
   const store = S.mode === 'store';
-  const meta = i.by && !store && !i.done && i.by !== S.settings.name ? `הוסיף/ה: ${i.by}` : '';
+  
   return `
   <div class="row ${i.done ? 'done' : ''} ${S.justDone === i.id ? 'just' : ''}" data-id="${esc(i.id)}" ${store ? 'data-act="toggle"' : ''}>
     <button class="chk" data-act="toggle" aria-label="${i.done ? 'הוצא מהעגלה' : 'סמן שנכנס לעגלה'}">${ICON.check}</button>
-    <div class="name"><span class="n">${esc(i.n)}</span>${meta ? `<span class="meta">${esc(meta)}</span>` : ''}</div>
+    <div class="name"><span class="n">${esc(i.n)}</span></div>
     ${store
       ? (i.q > 1 ? `<span class="qty-badge">×${i.q}</span>` : '')
       : `${i.done ? '' : `<div class="qty"><button data-act="minus" aria-label="פחות">${ICON.minus}</button><span>${i.q}</span><button data-act="plus" aria-label="יותר">${ICON.plus}</button></div>`}
