@@ -99,6 +99,21 @@ async function ghPut(list, sha) {
   const j = await r.json();
   return { sha: j.content.sha };
 }
+// בדיקה מפורטת של הטוקן: האם יש לו הרשאת כתיבה לריפו, ואם לא – מה בדיוק לתקן
+async function checkToken() {
+  const { owner, repo, token } = S.settings;
+  const r = await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}?t=${Date.now()}`, { headers: headers(), cache: 'no-store' });
+  if (r.status === 401) throw new Error('הטוקן לא תקין או שפג תוקפו – צור טוקן חדש והדבק אותו');
+  if (r.status === 404) throw new Error(`הריפו ${owner}/${repo} לא נמצא, או שהטוקן לא כולל אותו`);
+  if (!r.ok) throw httpErr(r.status);
+  const j = await r.json();
+  if (j.permissions && j.permissions.push) return true;
+  const classic = token.trim().startsWith('ghp_');
+  throw new Error(classic
+    ? 'טוקן קלאסי בלי הרשאה: צור טוקן חדש וסמן V ליד public_repo (או repo)'
+    : 'טוקן בלי הרשאת כתיבה: בהגדרות הטוקן ב-GitHub, Repository access ← בחר shopping-list, ו-Contents ← Read and write');
+}
+
 function httpErr(code) {
   const msg = { 401: 'הטוקן לא תקין או שפג תוקפו', 403: 'לטוקן אין הרשאת כתיבה – ב-GitHub ערוך את הטוקן: Contents ← Read and write', 404: 'הריפו לא נמצא – בדוק שם משתמש ושם ריפו' }[code] || `שגיאת GitHub (${code})`;
   const e = new Error(msg); e.code = code; return e;
@@ -127,7 +142,9 @@ async function sync() {
     save(LS.base, S.base); save(LS.sha, S.sha); save(LS.pending, S.pending);
     S.lastSync = new Date(); setStatus('ok');
   } catch (e) {
-    setStatus('err', e.message || 'שגיאת סנכרון');
+    let msg = e.message || 'שגיאת סנכרון';
+    if (e.code === 403) { try { await checkToken(); } catch (e2) { msg = e2.message; } }
+    setStatus('err', msg);
   } finally {
     S.syncing = false; render();
     if (S.syncAgain) { S.syncAgain = false; scheduleSync(300); }
@@ -351,7 +368,7 @@ $('#sSave').addEventListener('click', async () => {
   if (!connected()) { st.textContent = 'חסר טוקן, משתמש או שם ריפו'; st.className = 's-status err'; return; }
   st.textContent = 'בודק חיבור…'; st.className = 's-status';
   try {
-    await ghGet(); st.textContent = '✓ מחובר! הרשימה תסונכרן אוטומטית.'; st.className = 's-status ok';
+    await checkToken(); st.textContent = '✓ מחובר עם הרשאת כתיבה! הרשימה תסונכרן אוטומטית.'; st.className = 's-status ok';
     // שינויים שנעשו לפני החיבור נשמרים ונשלחים כ-pending
     await sync(); setTimeout(() => $('#settingsModal').classList.add('hidden'), 900);
   } catch (e) { st.textContent = e.message; st.className = 's-status err'; }
