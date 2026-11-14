@@ -231,3 +231,11 @@ body[data-mode="store"] .toast{bottom:calc(var(--dock-h) + 90px + env(safe-area-
 .receipt{background:#fff;box-shadow:0 6px 20px rgba(18,48,74,.06)}
 .receipt[open]{border-color:rgba(233,79,122,.35);box-shadow:0 10px 28px rgba(233,79,122,.1)}
 .r-again{border-color:rgba(233,79,122,.5);color:var(--magenta)}
+
+/* סרגל הניווט התחתון בגרדיאנט השמיים, כמו הכותרת */
+.dock{background:linear-gradient(100deg,var(--sky1) 0%,#3f9ceb 55%,var(--sky2) 100%);border:1px solid rgba(255,255,255,.35);box-shadow:0 12px 32px rgba(42,139,224,.35)}
+.dock::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(120px 60px at 90% 0%,rgba(255,226,120,.45),transparent 70%)}
+.tab{position:relative;color:#fff;text-shadow:0 1px 4px rgba(10,60,120,.25)}
+.tab.active{text-shadow:none}
+.tab.active{color:var(--sky1);background:#fff;box-shadow:0 4px 12px rgba(10,60,120,.18)}
+.tab-store.active{color:var(--coral);background:#fff}

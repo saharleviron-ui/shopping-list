@@ -1,5 +1,5 @@
 // Service worker: האפליקציה נפתחת גם בלי קליטה. קריאות ל-GitHub API לא נשמרות במטמון.
-const CACHE = 'shopping-list-v10';
+const CACHE = 'shopping-list-v11';
 const FILES = ['./', 'index.html', 'style.css', 'app.js', 'pdf.js', 'products.json', 'manifest.json', 'icons/icon-192.png', 'icons/icon-512.png',
   'fonts/karantina-hebrew-700-normal.woff2', 'fonts/karantina-latin-700-normal.woff2', 'fonts/rubik-hebrew-400-normal.woff2', 'fonts/rubik-latin-400-normal.woff2', 'fonts/rubik-hebrew-500-normal.woff2', 'fonts/rubik-latin-500-normal.woff2', 'fonts/rubik-hebrew-600-normal.woff2', 'fonts/rubik-latin-600-normal.woff2', 'fonts/rubik-hebrew-700-normal.woff2', 'fonts/rubik-latin-700-normal.woff2'];
 
