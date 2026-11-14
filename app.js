@@ -244,11 +244,11 @@ function addProduct(it) {
 // ---------- render ----------
 // צבע לכל מחלקה – כמו שלטי המעברים בסופר
 const CAT_COLORS = {
-  produce: '#2f9a55', bakery: '#c98a1c', dairy: '#2f7fc4', meat: '#cf3b2e', deli: '#e0672c',
-  dry: '#9a6a34', cans: '#b8402b', baking: '#7b5fc7', breakfast: '#d39a17', snacks: '#d6488f',
-  drinks: '#1497ab', coffee: '#6f4529', frozen: '#3fa3dc', baby: '#e2789f', hygiene: '#6c7fd0',
-  cleaning: '#16a08a', pets: '#8c6a4c', other: '#7c828c'
-};
+  produce: '#4dff88', bakery: '#ffc94d', dairy: '#4db8ff', meat: '#ff5a6e', deli: '#ff8a4d',
+  dry: '#e0b07a', cans: '#ff6b4d', baking: '#b48cff', breakfast: '#ffe14d', snacks: '#ff47e6',
+  drinks: '#27e3ff', coffee: '#d49a6a', frozen: '#8ae9ff', baby: '#ff9ccf', hygiene: '#8c9dff',
+  cleaning: '#2effd2', pets: '#c9a27e', other: '#a5a3b8'
+}
 const catColor = id => CAT_COLORS[id] || CAT_COLORS.other;
 const ICON = {
   minus: '<svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg>',
@@ -276,7 +276,7 @@ function render() {
       <div class="shelf">${byCat[g].map(rowHtml).join('')}</div>
     </section>`).join('');
   if (done.length) html += `
-    <section class="aisle cart" style="--c:#8b8f96">
+    <section class="aisle cart" style="--c:#58ff9c">
       <h2 class="aisle-sign"><span class="aisle-ic">🛒</span><span class="aisle-name">כבר בעגלה</span><span class="aisle-n">${done.length}</span></h2>
       <div class="shelf">${done.map(rowHtml).join('')}</div>
     </section>`;
