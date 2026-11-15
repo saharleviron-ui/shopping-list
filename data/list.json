@@ -6,10 +6,10 @@
    "n": "חלב נטול לקטוז",
    "c": "dairy",
    "q": 1,
-   "done": false,
+   "done": true,
    "by": "סהר",
    "at": 1794645085320,
-   "doneAt": null
+   "doneAt": 1794759045002
   },
   {
    "id": "mwg5bj2yxp9xp",
@@ -187,6 +187,6 @@
   }
  ],
  "history": [],
- "updatedAt": "2026-11-15T16:09:24.639Z",
+ "updatedAt": "2026-11-15T16:10:46.486Z",
  "updatedBy": "סהר"
 }
