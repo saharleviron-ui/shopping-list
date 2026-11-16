@@ -154,6 +154,15 @@
    "done": false,
    "by": "סהר",
    "at": 1794802297982
+  },
+  {
+   "id": "mwiqyasmuncyp",
+   "n": "תפוחי עץ",
+   "c": "produce",
+   "q": 1,
+   "done": false,
+   "by": "סהר",
+   "at": 1794802306342
   }
  ],
  "custom": [
@@ -191,6 +200,6 @@
   }
  ],
  "history": [],
- "updatedAt": "2026-11-16T04:11:39.431Z",
+ "updatedAt": "2026-11-16T04:11:47.767Z",
  "updatedBy": "סהר"
 }
