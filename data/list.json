@@ -172,6 +172,15 @@
    "done": false,
    "by": "סהר",
    "at": 1794802359344
+  },
+  {
+   "id": "mwiqzt7xudwwm",
+   "n": "אבוקדו",
+   "c": "produce",
+   "q": 1,
+   "done": false,
+   "by": "סהר",
+   "at": 1794802376877
   }
  ],
  "custom": [
@@ -213,6 +222,6 @@
   }
  ],
  "history": [],
- "updatedAt": "2026-11-16T04:12:40.713Z",
+ "updatedAt": "2026-11-16T04:12:58.327Z",
  "updatedBy": "סהר"
 }
