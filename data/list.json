@@ -156,10 +156,10 @@
    "n": "אפרסמון",
    "c": "produce",
    "q": 1,
-   "done": false,
+   "done": true,
    "by": "סהר",
    "at": 1794802297982,
-   "doneAt": null
+   "doneAt": 1795189190635
   },
   {
    "id": "mwiqyasmuncyp",
@@ -455,6 +455,6 @@
   }
  ],
  "history": [],
- "updatedAt": "2026-11-19T15:16:18.043Z",
+ "updatedAt": "2026-11-20T15:39:51.920Z",
  "updatedBy": "סהר"
 }
