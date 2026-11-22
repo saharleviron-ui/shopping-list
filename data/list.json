@@ -2,15 +2,6 @@
  "version": 1,
  "items": [
   {
-   "id": "mwqfk94me3p4k",
-   "n": "רעות בן אור שקד",
-   "c": "other",
-   "q": 3,
-   "done": false,
-   "by": "רעות בן אור שקד",
-   "at": 1795266904630
-  },
-  {
    "id": "mwqfkhqcqxfcd",
    "n": "נוזל לניקוי רצפות",
    "c": "cleaning",
@@ -394,6 +385,6 @@
    ]
   }
  ],
- "updatedAt": "2026-11-22T16:11:09.552Z",
- "updatedBy": "רעות בן אור שקד"
+ "updatedAt": "2026-11-22T17:02:42.072Z",
+ "updatedBy": "סהר"
 }
