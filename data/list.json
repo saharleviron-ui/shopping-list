@@ -71,19 +71,20 @@
    "n": "מלח למדיח",
    "c": "cleaning",
    "q": 1,
-   "done": false,
+   "done": true,
    "by": "רעות בן אור שקד",
-   "at": 1795363836788
+   "at": 1795363836788,
+   "doneAt": 1795447175684
   },
   {
    "id": "mws1a0yfvp8tw",
    "n": "מבריק למדיח",
    "c": "other",
    "q": 1,
-   "done": true,
+   "done": false,
    "by": "רעות בן אור שקד",
    "at": 1795363845207,
-   "doneAt": 1795447172626
+   "doneAt": null
   },
   {
    "id": "mws1aapmpg8ih",
@@ -397,6 +398,6 @@
    ]
   }
  ],
- "updatedAt": "2026-11-23T15:19:34.272Z",
+ "updatedAt": "2026-11-23T15:19:37.270Z",
  "updatedBy": "סהר"
 }
